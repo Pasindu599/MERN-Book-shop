@@ -1,2 +1,2 @@
-# Inventory-management-system
- For online shoping 
+# Mern Book Shop
+ For online shopping 
