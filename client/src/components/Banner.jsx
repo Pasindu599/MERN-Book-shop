@@ -1,4 +1,5 @@
 import React from "react";
+import BannerCard from "../home/BannerCard";
 
 function Banner() {
   return (
@@ -28,7 +29,9 @@ function Banner() {
             </button>
           </div>
         </div>
-        <div>Right Side</div>
+        <div>
+          <BannerCard />
+        </div>
       </div>
     </div>
   );
