@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const booksRoutes = require("./routes/books-routes");
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 
 app.use("/api/books/", booksRoutes);
