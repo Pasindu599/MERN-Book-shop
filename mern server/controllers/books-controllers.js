@@ -5,28 +5,10 @@ const e = require("express");
 
 const Book = require("../models/book");
 
-// const getBooks = async (req, res, next) => {
-//   let books;
-//   try {
-//     books = await Book.find({});
-//   } catch (err) {
-//     const error = new HttpError(
-//       "Fetching books failed, please try again later.",
-//       500
-//     );
-//     return next(error);
-//   }
-//   res.json({ books: books.map((book) => book.toObject({ getters: true })) });
-// };
-
 const getBooks = async (req, res, next) => {
-  let query = {};
-  if (req.query.category) {
-    query.category = req.query.category;
-  }
   let books;
   try {
-    books = await Book.find(query);
+    books = await Book.find({});
   } catch (err) {
     const error = new HttpError(
       "Fetching books failed, please try again later.",
@@ -36,6 +18,24 @@ const getBooks = async (req, res, next) => {
   }
   res.json({ books: books.map((book) => book.toObject({ getters: true })) });
 };
+
+// const getBooks = async (req, res, next) => {
+//   let query = {};
+//   if (req.query.category) {
+//     query.category = req.query.category;
+//   }
+//   let books;
+//   try {
+//     books = await Book.find(query);
+//   } catch (err) {
+//     const error = new HttpError(
+//       "Fetching books failed, please try again later.",
+//       500
+//     );
+//     return next(error);
+//   }
+//   res.json({ books: books.map((book) => book.toObject({ getters: true })) });
+// };
 
 const uploadBook = async (req, res, next) => {
   const errors = validationResult(req);
