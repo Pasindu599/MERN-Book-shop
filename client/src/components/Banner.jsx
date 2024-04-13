@@ -29,9 +29,8 @@ function Banner() {
             </button>
           </div>
         </div>
-        <div>
-          <BannerCard />
-        </div>
+
+        <BannerCard />
       </div>
     </div>
   );
