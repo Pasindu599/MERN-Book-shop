@@ -1,11 +1,19 @@
 import Banner from "../components/Banner";
-import FavouriteBooks from "./FavouriteBooks";
+import BestSellerBooks from "./BestSellerBooks";
+import FavBook from "./FavBook";
+import OtherBooks from "./OtherBooks";
+import PromoBanner from "./PromoBanner";
+import Review from "./Review";
 
 export default function Home() {
   return (
     <>
       <Banner />
-      <FavouriteBooks />
+      <BestSellerBooks />
+      <FavBook />
+      <PromoBanner />
+      <OtherBooks />
+      <Review />
     </>
   );
 }

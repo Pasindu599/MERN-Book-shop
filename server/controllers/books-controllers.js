@@ -18,7 +18,7 @@ const getBooks = async (req, res, next) => {
   }
   res.json({ books: books.map((book) => book.toObject({ getters: true })) });
 };
-
+// find by category
 // const getBooks = async (req, res, next) => {
 //   let query = {};
 //   if (req.query.category) {
@@ -36,6 +36,32 @@ const getBooks = async (req, res, next) => {
 //   }
 //   res.json({ books: books.map((book) => book.toObject({ getters: true })) });
 // };
+
+// get a single book
+
+const getBookById = async (req, res, next) => {
+  const bookId = req.params.id;
+  let book;
+  try {
+    book = await Book.findById(bookId);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find a book.",
+      500
+    );
+    return next(error);
+  }
+
+  if (!book) {
+    const error = new HttpError(
+      "Could not find a book for the provided id.",
+      404
+    );
+    return next(error);
+  }
+
+  res.json({ book: book.toObject({ getters: true }) });
+};
 
 const uploadBook = async (req, res, next) => {
   const errors = validationResult(req);
@@ -137,3 +163,4 @@ exports.uploadBook = uploadBook;
 exports.getBooks = getBooks;
 exports.updateBook = updateBook;
 exports.deleteBook = deleteBook;
+exports.getBookById = getBookById;
