@@ -5,6 +5,7 @@ import Shop from "../shop/Shop";
 import About from "../components/About";
 import Blog from "../components/Blog";
 import SingleBook from "../shop/SingleBook";
+import DashboardLayout from "../dashboard/DashboardLayout";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,11 @@ const router = createBrowserRouter([
             .then((data) => data.book),
       },
     ],
+  },
+
+  {
+    path: "/admin/dashboard",
+    element: <DashboardLayout />,
   },
 ]);
 
