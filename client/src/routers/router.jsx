@@ -6,6 +6,10 @@ import About from "../components/About";
 import Blog from "../components/Blog";
 import SingleBook from "../shop/SingleBook";
 import DashboardLayout from "../dashboard/DashboardLayout";
+import Dashboard from "../dashboard/Dashboard";
+import UploadBook from "../dashboard/UploadBook";
+import ManageBook from "../dashboard/ManageBook";
+import EditBooks from "../dashboard/EditBooks";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +46,28 @@ const router = createBrowserRouter([
   {
     path: "/admin/dashboard",
     element: <DashboardLayout />,
+    children: [
+      {
+        path: "/admin/dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "/admin/dashboard/upload",
+        element: <UploadBook />,
+      },
+      {
+        path: "/admin/dashboard/manage",
+        element: <ManageBook />,
+      },
+      {
+        path: "/admin/dashboard/edit-books/:id",
+        element: <EditBooks />,
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/api/books/book/${params.id}`)
+            .then((response) => response.json())
+            .then((data) => data.book),
+      },
+    ],
   },
 ]);
 
