@@ -10,6 +10,7 @@ import Dashboard from "../dashboard/Dashboard";
 import UploadBook from "../dashboard/UploadBook";
 import ManageBook from "../dashboard/ManageBook";
 import EditBooks from "../dashboard/EditBooks";
+import Signup from "../components/Signup";
 
 const router = createBrowserRouter([
   {
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
             .then((data) => data.book),
       },
     ],
+  },
+  {
+    path: "/sign-up",
+    element: <Signup />,
   },
 ]);
 
