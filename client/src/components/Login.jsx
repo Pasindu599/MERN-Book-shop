@@ -4,10 +4,10 @@ import AuthProvider from "../contexts/AuthProvider";
 
 import { useLocation, useNavigate } from "react-router-dom";
 
-function Signup() {
-  const { createUser, loginWithGoogle } = useContext(AuthContext);
+function Login() {
+  const { createUser, loginWithGoogle, login } = useContext(AuthContext);
 
-  const [error, setError] = useState("error");
+  const [error, setError] = useState();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -16,41 +16,16 @@ function Signup() {
   const from = location.state?.from?.pathname || "/";
   console.log(from);
 
-  const handleSignUp = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     const form = e.target;
     const email = form.email.value;
     const password = form.password.value;
-    const mobile = form.mobile.value;
-    const name = form.name.value;
-
-    createUser(email, password)
+    login(email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-
+        alert("Sign in successfully");
         navigate(from, { replace: true });
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-        alert(errorMessage);
-        setError(errorMessage);
-      });
-
-    const userEmail = email;
-    //add user to the database
-    fetch("http://localhost:5000/api/users/signup", {
-      method: "POST",
-      body: JSON.stringify({ name, userEmail, mobile }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        alert("Sign up successfully");
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -61,6 +36,21 @@ function Signup() {
       });
   };
 
+  // const handleGoogleSignIn = () => {
+  //   loginWithGoogle()
+  //     .then((userCredential) => {
+  //       const user = userCredential.user;
+  //       alert("Sign in successfully");
+  //       navigate(from, { replace: true });
+  //     })
+  //     .catch((error) => {
+  //       const errorCode = error.code;
+  //       const errorMessage = error.message;
+  //       console.log(errorCode, errorMessage);
+  //       alert(errorMessage);
+  //       setError(errorMessage);
+  //     });
+  // };
   const handleGoogleSignIn = async () => {
     let userEmail;
     let name;
@@ -108,7 +98,7 @@ function Signup() {
       <div class="p-8 lg:w-1/2 mx-auto">
         <div class="bg-white rounded-t-lg p-8">
           <p class="text-center text-sm text-gray-400 font-light">
-            Sign up with
+            Sign In with
           </p>
           <div>
             <div class="flex items-center justify-center space-x-4 mt-3">
@@ -158,34 +148,14 @@ function Signup() {
         </div>
         <div class="bg-orange-100 rounded-b-lg py-12 px-4 lg:px-24">
           <p class="text-center text-sm text-gray-500 font-light">
-            Or If you have an account .Please{" "}
-            <a href="/login">
-              <span class="text-indigo-500 font-bold underline">login</span>
+            Or If you don't have an account .Please{" "}
+            <a href="/sign-up">
+              <span class="text-indigo-500 font-bold underline">sign up</span>
             </a>{" "}
             here
           </p>
-          <form class="mt-6" onSubmit={handleSignUp}>
+          <form class="mt-6" onSubmit={handleLogin}>
             <div class="relative">
-              <input
-                class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600  transition  rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
-                id="name"
-                type="text"
-                placeholder="Name"
-                name="name"
-              />
-              <div class="absolute left-0 inset-y-0 flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-7 w-7 ml-3 text-gray-400 p-1"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                </svg>
-              </div>
-            </div>
-            <div class="relative mt-3">
               <input
                 class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600  transition  rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
                 id="email"
@@ -224,25 +194,6 @@ function Signup() {
                 </svg>
               </div>
             </div>
-            <div class="relative mt-3">
-              <input
-                class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600  transition  rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
-                id="mobile"
-                type="text"
-                placeholder="Mobile Number"
-                name="mobile"
-              />
-              <div class="absolute left-0 inset-y-0 flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-7 w-7 ml-3 text-gray-400 p-1"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M10 2a5 5 0 00-5 5v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2H7V7a3 3 0 015.905-.75 1 1 0 001.937-.5A5.002 5.002 0 0010 2z" />
-                </svg>
-              </div>
-            </div>
             <div class="mt-4 flex items-center text-gray-500">
               {/* <input
                 type="checkbox"
@@ -252,12 +203,17 @@ function Signup() {
               /> */}
               {/* <label for="remember">Remember me</label> */}
             </div>
+            {error && (
+              <p class="text-red-500 text-sm">
+                Your email or password is wrong
+              </p>
+            )}
             <div class="flex items-center justify-center mt-8">
               <button
                 type="submit"
                 class="text-white py-2 px-4 uppercase rounded bg-indigo-500 hover:bg-indigo-600 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
               >
-                Sign up
+                Sign in
               </button>
             </div>
           </form>
@@ -267,4 +223,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default Login;

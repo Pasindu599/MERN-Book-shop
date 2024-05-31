@@ -4,6 +4,7 @@ const HttpError = require("../models/http-error");
 const e = require("express");
 
 const Book = require("../models/book");
+const User = require("../models/user");
 
 const getBooks = async (req, res, next) => {
   let books;
@@ -72,23 +73,72 @@ const uploadBook = async (req, res, next) => {
     );
   }
 
-  const { title, description, bookImage, authorName, price, category, pdfURL } =
-    req.body;
+  const {
+    productName,
+    description,
+    productImage,
+    normalPrice,
+    salePrice,
+    discount,
+    category,
+    email,
+  } = req.body;
+
+  //find id using email
+  const userEmail = email;
+  // console.log(userEmail, "userEmail");
+  let currentUser;
+  try {
+    currentUser = await User.findOne({ userEmail: userEmail });
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find a user.",
+      500
+    );
+    return next(error);
+  }
+  // console.log(currentUser, "currentUser");
+  if (!currentUser) {
+    const error = new HttpError(
+      "Could not find a user for the provided email.",
+      404
+    );
+    return next(error);
+  }
+
+  const user = currentUser;
 
   const createdBook = new Book({
-    title,
+    productName,
     description,
-    bookImage,
-    authorName,
-    price,
+    productImage,
+    normalPrice,
+    salePrice,
+    discount,
     category,
-    pdfURL,
+    user,
   });
 
   try {
+    const existingBook = await Book.findOne({ productName: productName });
+    if (existingBook) {
+      const error = new HttpError("Book already exists", 422);
+      return next(error);
+    }
+  } catch (err) {
+    const error = new HttpError("Creating book failed, please try again.", 500);
+    return next(error);
+  }
+
+  try {
+    // console.log(user.products, "user.products");
     const sess = await mongoose.startSession();
     sess.startTransaction();
     await createdBook.save({ session: sess });
+    user.products.push(createdBook);
+    // console.log(user.products, "user.products");
+    await user.save({ session: sess });
+    // console.log(user.products, "user.products");
     await sess.commitTransaction();
   } catch (err) {
     const error = new HttpError("Creating book failed, please try again.", 500);
@@ -130,6 +180,8 @@ const deleteBook = async (req, res, next) => {
   try {
     book = await Book.findById(bookId);
     console.log(book);
+
+    user = await User.findById(book.user);
   } catch (err) {
     const error = new HttpError(
       "Something went wrong.Could not delete the place",
@@ -146,7 +198,13 @@ const deleteBook = async (req, res, next) => {
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
+    console.log(user, "book.user");
+    console.log(user.products, "book.user.products");
+    user.products.pull(book);
+    console.log(user.products, "book.user.products");
+    await user.save({ session: sess });
     await book.deleteOne({ session: sess });
+
     await sess.commitTransaction();
   } catch (err) {
     const error = new HttpError(

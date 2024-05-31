@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
 
 import { FaBarsStaggered, FaBlog, FaXmark } from "react-icons/fa6";
+import { AuthContext } from "../contexts/AuthProvider";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
+
+  const { user } = useContext(AuthContext);
 
   // toggle menu
   const toggleMenu = () => {
@@ -31,7 +35,6 @@ export default function Navbar() {
     { link: "Home", path: "/" },
     { link: "Shop", path: "/shop" },
     { link: "About", path: "/about" },
-    { link: "Blog", path: "/blog" },
     { link: "Sell Your Book", path: "/admin/dashboard" },
   ];
 
@@ -39,16 +42,16 @@ export default function Navbar() {
     <header className="w-full bg-transparent fixed top-0 left-0 right-0 transition-all ease-in duration-300">
       <nav
         className={`py-4 lg:px-24 px-4 ${
-          isSticky ? "sticky top-0 left-0 right-0 bg-blue-300  " : ""
+          isSticky ? "sticky top-0 left-0 right-0 bg-orange-300  " : ""
         }`}
       >
         <div className="flex justify-between items-center text-base gap-8">
           <Link
             to="/"
-            className="text-2xl font-bold text-blue-700 flex items-center gap-2 "
+            className="text-2xl font-bold text-orange-700 flex items-center gap-2 "
           >
             <FaBlog className="inline-block" />
-            Books
+            YardSale
           </Link>
           {/* for large devices -- nav items */}
           <ul className="md:flex space-x-12 hidden ">
@@ -56,7 +59,7 @@ export default function Navbar() {
               <Link
                 key={path}
                 to={path}
-                className="block text-base text-black uppercase cursor-pointer hover:text-blue-700"
+                className="block text-base text-black uppercase cursor-pointer hover:text-orange-700"
               >
                 {link}
               </Link>
@@ -64,9 +67,17 @@ export default function Navbar() {
           </ul>
 
           <div className="space-x-12 hidden lg:flex items-center">
-            <button>
-              <FaBarsStaggered className="w-5 hover:text-blue-700" />
+            <button className="md:hidden">
+              <FaBarsStaggered className="w-5 hover:text-orange-700" />
             </button>
+            <Link
+              to={user ? "/logout" : "/login"}
+              className="text-black hover:text-orange-700"
+            >
+              <button className="bg-orange-700 text-white px-4 py-2 rounded-lg">
+                {user ? "Logout" : "Login"}
+              </button>
+            </Link>
           </div>
 
           {/* menu buuton for mobile */}
@@ -86,7 +97,7 @@ export default function Navbar() {
 
           {/* nav item for mobile */}
           <div
-            className={`space-y-4 px-4 mt-16 py-7 bg-blue-700 ${
+            className={`space-y-4 px-4 mt-16 py-7 bg-orange-700 ${
               isMenuOpen ? "block fixed top-0 right-0 left-0 " : "hidden"
             }`}
           >
@@ -94,7 +105,7 @@ export default function Navbar() {
               <Link
                 key={path}
                 to={path}
-                className="block text-base text-white uppercase cursor-pointer hover:text-blue-700"
+                className="block text-base text-white uppercase cursor-pointer hover:text-orange-700"
               >
                 {link}
               </Link>

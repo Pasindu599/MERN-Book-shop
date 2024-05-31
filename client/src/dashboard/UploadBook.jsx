@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { useState } from "react";
+import { AuthContext } from "../contexts/AuthProvider";
 
 import {
   Button,
@@ -11,58 +12,82 @@ import {
 } from "flowbite-react";
 
 function UploadBook() {
+  const { user } = useContext(AuthContext);
+  console.log(user);
+
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      setEmail(user.email);
+    }
+  }, [user]);
+
   const categories = [
-    "Action",
-    "Adventure",
-    "Biography",
-    "Comedy",
-    "Crime",
-    "Drama",
-    "Fantasy",
-    "Historical",
-    "Horror",
-    "Mystery",
-    "Romance",
-    "Science Fiction",
-    "Thriller",
-    "Western",
+    "Electronic",
+    "Clothing",
+    "Books",
+    "Shoes",
+    "Jewelry",
+    "Beauty",
+    "Toys",
+
+    "Home Appliances",
+    "Furniture",
+    "Others",
   ];
 
   const [selectedCategories, setSelectedCategories] = useState(categories[0]);
 
-  const handleCategoryChange = (e) => {
+  const handleCategoryChange = async (e) => {
     setSelectedCategories(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted");
+
+    const imageInput = document.getElementById("productImage");
+    const file = imageInput.files[0];
+    const { url } = await fetch("http://localhost:5000/s3Url").then((res) =>
+      res.json()
+    );
+
+    await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      body: file,
+    });
+
+    const productImage = url.split("?")[0];
+
     const formData = e.target;
 
-    const title = formData.title.value;
-    const authorName = formData.authorName.value;
-    const bookImage = formData.bookImage.value;
+    const productName = formData.productName.value;
+    const normalPrice = formData.normalPrice.value;
+
     const category = formData.categoryName.value;
     const description = formData.description.value;
-    const pdfURL = formData.pdfURL.value;
-    const price = 100;
+    const discount = formData.discount.value;
+    const salePrice = formData.salePrice.value;
 
-    const bookData = {
-      title,
+    const productData = {
+      productName,
       description,
-      bookImage,
-      authorName,
-
+      productImage,
+      normalPrice,
+      salePrice,
+      discount,
       category,
-
-      pdfURL,
-      price,
+      email,
     };
-    console.log(bookData);
+    console.log(productData);
 
     fetch("http://localhost:5000/api/books/upload-book", {
       method: "POST",
-      body: JSON.stringify(bookData),
+      body: JSON.stringify(productData),
       headers: {
         "Content-Type": "application/json",
       },
@@ -70,17 +95,18 @@ function UploadBook() {
       .then((res) => res.json())
       .then((data) => {
         // console.log(data);
-        alert("Book uploaded successfully");
-        formData.reset();
+        // formData.reset();
+        alert("Product uploaded successfully");
       })
       .catch((err) => {
+        alert("Something went wrong");
         console.log(err);
       });
   };
 
   return (
     <div className="px-4 my-12 ">
-      <h2 className="mb-8 text-3xl font-bold">Upload A Book</h2>
+      <h2 className="mb-8 text-3xl font-bold">Upload A Product</h2>
       <form
         onSubmit={handleSubmit}
         className="flex lg:w-[1180px] flex-col flex-wrap gap-4"
@@ -88,25 +114,25 @@ function UploadBook() {
         <div className="flex gap-8">
           <div className="lg:w-1/2">
             <div className="mb-2 block">
-              <Label htmlFor="title" value="Book Title" />
+              <Label htmlFor="productName" value="Product Name" />
             </div>
             <TextInput
-              id="title"
-              name="title"
+              id="productName"
+              name="productName"
               type="text"
-              placeholder="Book title"
+              placeholder="Product name"
               required
             />
           </div>
           <div className="lg:w-1/2">
             <div className="mb-2 block">
-              <Label htmlFor="authorName" value="Author Name" />
+              <Label htmlFor="normalPrice" value="Normal Price" />
             </div>
             <TextInput
-              id="authorName"
-              name="Author Name"
+              id="normalPrice"
+              name="normalPrice"
               type="text"
-              placeholder="Author name"
+              placeholder="Normal Price"
               required
             />
           </div>
@@ -116,13 +142,14 @@ function UploadBook() {
         <div className="flex gap-8">
           <div className="lg:w-1/2">
             <div className="mb-2 block">
-              <Label htmlFor="bookImage" value="Book Image" />
+              <Label htmlFor="productImage" value="Product Image" />
             </div>
-            <TextInput
-              id="bookImage"
-              name="bookImage"
-              type="text"
-              placeholder="Book Image"
+            <input
+              className="w-full rounded border border-gray-300"
+              id="productImage"
+              name="productImage"
+              type="file"
+              placeholder="Product Image"
               required
             />
           </div>
@@ -158,20 +185,39 @@ function UploadBook() {
             rows={4}
           />
         </div>
-        <div>
-          <div className="mb-2 block">
-            <Label htmlFor="pdfURL" value="Book pdf URL" />
+
+        <div className="flex gap-8">
+          <div className="lg:w-1/2">
+            <div className="mb-2 block">
+              <Label htmlFor="discount" value="Discount(%)" />
+            </div>
+            <TextInput
+              id="discount"
+              name="discount"
+              type="text"
+              placeholder="Discount"
+              required
+            />
           </div>
-          <TextInput
-            id="pdfURL"
-            name="pdfURL"
-            type="text"
-            placeholder="Book pdf URL"
-            required
-          />
+          <div className="lg:w-1/2">
+            <div className="mb-2 block">
+              <Label htmlFor="salePrice" value="Sale Price" />
+            </div>
+            <TextInput
+              id="salePrice"
+              name="salePrice"
+              type="text"
+              placeholder="Sale Price"
+              required
+            />
+          </div>
         </div>
-        <Button type="submit" className="mt-5">
-          Upload Book
+
+        <Button
+          type="submit"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        >
+          Upload Product
         </Button>
       </form>
     </div>

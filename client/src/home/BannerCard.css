@@ -14,21 +14,22 @@
 }
 
 .banner .swiper-slide:nth-child(1n) {
-  background-image: url("src/assets/book-banners/book1.png");
+  background-image: url("src/assets/book-banners/image4.jpeg");
+  background-size: cover;
 }
 
 .banner .swiper-slide:nth-child(2n) {
-  background-image: url("src/assets/book-banners/book2.png");
+  background-image: url("src/assets/book-banners/image2.jpg");
 }
 
 .banner .swiper-slide:nth-child(3n) {
-  background-image: url("src/assets/book-banners/book3.png");
+  background-image: url("src/assets/book-banners/image1.jpeg");
 }
 
 .banner .swiper-slide:nth-child(4n) {
-  background-image: url("src/assets/book-banners/book4.png");
+  background-image: url("src/assets/book-banners/image3.jpg");
 }
 
 .banner .swiper-slide:nth-child(5n) {
-  background-image: url("src/assets/book-banners/book5.png");
+  background-image: url("src/assets/book-banners/image5.jpg");
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import { useParams, useLoaderData } from "react-router-dom";
 import {
@@ -11,23 +11,29 @@ import {
 } from "flowbite-react";
 function EditBooks() {
   const { id } = useParams();
-  const { title, description, bookImage, authorName, price, category, pdfURL } =
-    useLoaderData();
+  const {
+    productName,
+    description,
+
+    normalPrice,
+    salePrice,
+    category,
+    discount,
+  } = useLoaderData();
+
+  let productImage = useLoaderData().productImage;
   const categories = [
-    "Action",
-    "Adventure",
-    "Biography",
-    "Comedy",
-    "Crime",
-    "Drama",
-    "Fantasy",
-    "Historical",
-    "Horror",
-    "Mystery",
-    "Romance",
-    "Science Fiction",
-    "Thriller",
-    "Western",
+    "Electronic",
+    "Clothing",
+    "Books",
+    "Shoes",
+    "Jewelry",
+    "Beauty",
+    "Toys",
+
+    "Home Appliances",
+    "Furniture",
+    "Others",
   ];
 
   const [selectedCategories, setSelectedCategories] = useState(category);
@@ -36,43 +42,63 @@ function EditBooks() {
     setSelectedCategories(e.target.value);
   };
 
-  const handleUpdateBook = (e) => {
+  const handleUpdateProduct = async (e) => {
     e.preventDefault();
     console.log("Form submitted");
+
+    const imageInput = document.getElementById("productImage");
+    console.log(imageInput.files, imageInput.files.length);
+
+    if (imageInput.files.length > 0) {
+      const file = imageInput.files[0];
+      const { url } = await fetch("http://localhost:5000/s3Url").then((res) =>
+        res.json()
+      );
+
+      await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: file,
+      });
+      productImage = url.split("?")[0];
+      console.log(url.split("?")[0]);
+    }
+
     const formData = e.target;
 
-    const title = formData.title.value;
-    const authorName = formData.authorName.value;
-    const bookImage = formData.bookImage.value;
+    const productName = formData.productName.value;
+    const normalPrice = formData.normalPrice.value;
+
     const category = formData.categoryName.value;
     const description = formData.description.value;
-    const pdfURL = formData.pdfURL.value;
-    const price = 100;
+    const discount = formData.discount.value;
+    const salePrice = formData.salePrice.value;
 
-    const bookData = {
-      title,
-      description,
-      bookImage,
-      authorName,
-
+    const productData = {
+      productName,
+      normalPrice,
+      productImage,
       category,
-
-      pdfURL,
-      price,
+      description,
+      discount,
+      salePrice,
     };
-    console.log(bookData);
+    console.log(productData);
 
     fetch(`http://localhost:5000/api/books/book/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(bookData),
+      body: JSON.stringify(productData),
     })
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        alert("Book updated successfully");
+        formData.reset();
+        alert("Product updated successfully");
       })
       .catch((err) => {
         console.log(err);
@@ -81,36 +107,36 @@ function EditBooks() {
 
   return (
     <div className="px-4 my-12 ">
-      <h2 className="mb-8 text-3xl font-bold">Update the Book</h2>
+      <h2 className="mb-8 text-3xl font-bold">Update the Product</h2>
       <form
-        onSubmit={handleUpdateBook}
+        onSubmit={handleUpdateProduct}
         className="flex lg:w-[1180px] flex-col flex-wrap gap-4"
       >
         <div className="flex gap-8">
           <div className="lg:w-1/2">
             <div className="mb-2 block">
-              <Label htmlFor="title" value="Book Title" />
+              <Label htmlFor="productName" value="Product Name" />
             </div>
             <TextInput
-              id="title"
-              name="title"
+              id="productName"
+              name="productName"
               type="text"
-              placeholder="Book title"
+              placeholder="Product name"
               required
-              defaultValue={title}
+              defaultValue={productName}
             />
           </div>
           <div className="lg:w-1/2">
             <div className="mb-2 block">
-              <Label htmlFor="authorName" value="Author Name" />
+              <Label htmlFor="normalPrice" value="Normal Price" />
             </div>
             <TextInput
-              id="authorName"
-              name="Author Name"
+              id="normalPrice"
+              name="normalPrice"
               type="text"
-              placeholder="Author name"
+              placeholder="Normal Price"
               required
-              defaultValue={authorName}
+              defaultValue={normalPrice}
             />
           </div>
         </div>
@@ -119,15 +145,14 @@ function EditBooks() {
         <div className="flex gap-8">
           <div className="lg:w-1/2">
             <div className="mb-2 block">
-              <Label htmlFor="bookImage" value="Book Image" />
+              <Label htmlFor="productImage" value="Product Image" />
             </div>
-            <TextInput
-              id="bookImage"
-              name="bookImage"
-              type="text"
-              placeholder="Book Image"
-              required
-              defaultValue={bookImage}
+            <input
+              className="w-full rounded border border-gray-300"
+              id="productImage"
+              name="productImage"
+              type="file"
+              placeholder="Product Image"
             />
           </div>
           <div className="lg:w-1/2">
@@ -163,21 +188,38 @@ function EditBooks() {
             defaultValue={description}
           />
         </div>
-        <div>
-          <div className="mb-2 block">
-            <Label htmlFor="pdfURL" value="Book pdf URL" />
+
+        <div className="flex gap-8">
+          <div className="lg:w-1/2">
+            <div className="mb-2 block">
+              <Label htmlFor="discount" value="Discount" />
+            </div>
+            <TextInput
+              id="discount"
+              name="discount"
+              type="text"
+              placeholder="Discount"
+              required
+              defaultValue={discount}
+            />
           </div>
-          <TextInput
-            id="pdfURL"
-            name="pdfURL"
-            type="text"
-            placeholder="Book pdf URL"
-            required
-            defaultValue={pdfURL}
-          />
+          <div className="lg:w-1/2">
+            <div className="mb-2 block">
+              <Label htmlFor="salePrice" value="Sale Price" />
+            </div>
+            <TextInput
+              id="salePrice"
+              name="salePrice"
+              type="text"
+              placeholder="Sale Price"
+              required
+              defaultValue={salePrice}
+            />
+          </div>
         </div>
+
         <Button type="submit" className="mt-5">
-          Update the Book
+          Update the Product
         </Button>
       </form>
     </div>

@@ -18,7 +18,7 @@ import { Pagination } from "swiper/modules";
 function Review() {
   return (
     <div className="my-12 px-4 lg:px-24">
-      <h2 className="text-5xl font-bold text-center mb-10 leading-snug">
+      <h2 className="text-5xl font-bold text-center mb-10 leading-snug text-orange-800">
         Our Customers
       </h2>
 

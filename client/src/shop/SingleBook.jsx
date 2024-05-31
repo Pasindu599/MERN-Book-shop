@@ -1,13 +1,15 @@
 import React from "react";
+import DetailsSection from "../components/single-product-page/DetailsSection";
+import Slider from "../components/single-product-page/Slider";
+
 import { useLoaderData, useParams } from "react-router-dom";
 
 function SingleBook() {
-  const { _id, title, bookImage } = useLoaderData();
-
+  const { _id, productName, productImage } = useLoaderData();
   return (
-    <div className="mt-28 px-4 lg:px-24">
-      <img src={bookImage} alt={title} className="h-96" />
-      <h2>{title}</h2>
+    <div className="flex flex-col md:flex-row md:px-0 md:gap-6 md:py-20 items-center md:justify-center lg:px-14 lg:mt-10 lg:gap-16">
+      <Slider />
+      <DetailsSection />
     </div>
   );
 }
