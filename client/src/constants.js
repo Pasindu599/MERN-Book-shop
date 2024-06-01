@@ -1,3 +1,3 @@
-const baseURL = "http://localhost:5000";
+const baseURL = "https://yardsale-api.onrender.com";
 
 export { baseURL };

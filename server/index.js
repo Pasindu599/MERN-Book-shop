@@ -37,3 +37,5 @@ mongoose
     console.log("Connected to database!");
     app.listen(5000);
   });
+
+module.exports = app;
