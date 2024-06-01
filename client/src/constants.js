@@ -1,3 +1,3 @@
-const baseURL = "https://yardsale-api.onrender.com";
+const baseURL = "https://yardsale-three.vercel.app";
 
 export { baseURL };
