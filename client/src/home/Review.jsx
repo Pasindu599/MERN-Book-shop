@@ -44,9 +44,35 @@ function Review() {
             },
           }}
           modules={[Pagination]}
-          className="mySwiper"
+          className="mySwiper w-full h-full"
         >
-          <SwiperSlide className="shadow-2xl bg-white py-8 px-4 md:m-5 rounded-lg border ">
+          <SwiperSlide className="shadow-2xl bg-white py-8 px-4 md:m-5 rounded-lg border mb-10">
+            <div className="space-y-6 relative">
+              <div className="text-amber-500 flex gap-2">
+                <FaStar />
+                <FaStar />
+                <FaStar />
+                <FaStar />
+              </div>
+
+              <div className="mt-7">
+                <p className="mb-2 ">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis
+                  quod, quibusdam, voluptates, dolorum quae quia quos
+                  reprehenderit
+                </p>
+                <Avatar
+                  img={proPic}
+                  alt="avatar of Jese"
+                  rounded
+                  className="w-10 mb-4"
+                />
+                <h5 className="text-lg font-medium">Mark Ping</h5>
+                <p className="text-base ">CEO, ABC Company</p>
+              </div>
+            </div>
+          </SwiperSlide>
+          <SwiperSlide className="shadow-2xl bg-white py-8 px-4 md:m-5 rounded-lg border mb-10 ">
             <div className="space-y-6">
               <div className="text-amber-500 flex gap-2">
                 <FaStar />
@@ -56,7 +82,7 @@ function Review() {
               </div>
 
               <div className="mt-7">
-                <p className="mb-5 ">
+                <p className="mb-2 ">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis
                   quod, quibusdam, voluptates, dolorum quae quia quos
                   reprehenderit
@@ -82,33 +108,7 @@ function Review() {
               </div>
 
               <div className="mt-7">
-                <p className="mb-5 ">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis
-                  quod, quibusdam, voluptates, dolorum quae quia quos
-                  reprehenderit
-                </p>
-                <Avatar
-                  img={proPic}
-                  alt="avatar of Jese"
-                  rounded
-                  className="w-10 mb-4"
-                />
-                <h5 className="text-lg font-medium">Mark Ping</h5>
-                <p className="text-base ">CEO, ABC Company</p>
-              </div>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide className="shadow-2xl bg-white py-8 px-4 md:m-5 rounded-lg border ">
-            <div className="space-y-6">
-              <div className="text-amber-500 flex gap-2">
-                <FaStar />
-                <FaStar />
-                <FaStar />
-                <FaStar />
-              </div>
-
-              <div className="mt-7">
-                <p className="mb-5 ">
+                <p className="mb-2 ">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis
                   quod, quibusdam, voluptates, dolorum quae quia quos
                   reprehenderit

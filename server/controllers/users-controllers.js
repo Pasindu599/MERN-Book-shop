@@ -149,6 +149,7 @@ const signupUser = async (req, res, next) => {
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
+    console.log(createdUser);
     await createdUser.save({ session: sess });
     await sess.commitTransaction();
   } catch (err) {

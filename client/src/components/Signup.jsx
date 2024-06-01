@@ -16,49 +16,45 @@ function Signup() {
   const from = location.state?.from?.pathname || "/";
   console.log(from);
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
+
     const form = e.target;
     const email = form.email.value;
     const password = form.password.value;
     const mobile = form.mobile.value;
     const name = form.name.value;
 
-    createUser(email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
+    try {
+      const userCredential = await createUser(email, password);
+      const user = userCredential.user;
+      setError([]);
 
-        navigate(from, { replace: true });
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-        alert(errorMessage);
-        setError(errorMessage);
+      // get email in lowercase
+      const userEmail = email.toLowerCase();
+
+      // Add user to the database
+      const response = await fetch("http://localhost:5000/api/users/signup", {
+        method: "POST",
+        body: JSON.stringify({ name, userEmail: userEmail, mobile }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
 
-    const userEmail = email;
-    //add user to the database
-    fetch("http://localhost:5000/api/users/signup", {
-      method: "POST",
-      body: JSON.stringify({ name, userEmail, mobile }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        alert("Sign up successfully");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-        alert(errorMessage);
-        setError(errorMessage);
-      });
+      const data = await response.json();
+      console.log(data);
+      alert("Sign up successfully");
+
+      // Navigate after successful signup
+      navigate(from, { replace: true });
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+      setError(errorMessage);
+      alert(errorMessage);
+    }
   };
 
   const handleGoogleSignIn = async () => {

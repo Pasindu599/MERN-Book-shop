@@ -42,14 +42,14 @@ function ProductCards({ headline, products }) {
             },
           }}
           modules={[Pagination]}
-          className="mySwiper w-full h-full"
+          className="mySwiper w-full h-full "
         >
           {products.map((product) => (
-            <SwiperSlide key={product._id}>
+            <SwiperSlide key={product._id} className="mb-10">
               <Link to={`/book/${product._id}`} key={product._id}>
                 <div className="relative">
                   <img
-                    className="w-full h-96 object-cover rounded-lg"
+                    className="w-full h-full  rounded-lg object-scale-down"
                     key={product._id}
                     src={product.productImage}
                     alt={product.productName}

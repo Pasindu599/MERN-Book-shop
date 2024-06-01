@@ -1,4 +1,5 @@
 const express = require("express");
+const { check, validationResult } = require("express-validator");
 
 const usersControllers = require("../controllers/users-controllers");
 
@@ -10,6 +11,7 @@ router.get("/user/:id", usersControllers.getUserById);
 
 router.get("/user-email/:email", usersControllers.getUserByEmail);
 
+//validate the input fields
 router.post("/signup", usersControllers.signupUser);
 
 router.patch("/user/:id", usersControllers.updateUser);
