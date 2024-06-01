@@ -3,6 +3,7 @@ import { AuthContext } from "../contexts/AuthProvider";
 import AuthProvider from "../contexts/AuthProvider";
 
 import { useLocation, useNavigate } from "react-router-dom";
+import { baseURL } from "../constants";
 
 function Login() {
   const { createUser, loginWithGoogle, login } = useContext(AuthContext);
@@ -73,7 +74,7 @@ function Login() {
     console.log(name, "name");
 
     //add user to the database
-    await fetch("http://localhost:5000/api/users/signup", {
+    await fetch(`${baseURL}/api/users/signup`, {
       method: "POST",
       body: JSON.stringify({ userEmail, name }),
       headers: {

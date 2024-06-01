@@ -35,7 +35,7 @@ export default function Navbar() {
     { link: "Home", path: "/" },
     { link: "Shop", path: "/shop" },
     { link: "About", path: "/about" },
-    { link: "Sell Your Book", path: "/admin/dashboard" },
+    { link: "Sell Your Products", path: "/admin/dashboard" },
   ];
 
   return (

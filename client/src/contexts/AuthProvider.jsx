@@ -8,6 +8,7 @@ import { GoogleAuthProvider } from "firebase/auth";
 import { signInWithPopup } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { signOut } from "firebase/auth";
+import { deleteUser } from "firebase/auth";
 
 export const AuthContext = createContext();
 const auth = getAuth(app);
@@ -53,9 +54,22 @@ const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
+  const deleteUserAccount = () => {
+    setLoading(true);
+    return deleteUser(auth.currentUser);
+  };
+
   return (
     <AuthContext.Provider
-      value={{ createUser, user, loginWithGoogle, loading, login, logout }}
+      value={{
+        createUser,
+        user,
+        loginWithGoogle,
+        loading,
+        login,
+        logout,
+        deleteUserAccount,
+      }}
     >
       {children}
     </AuthContext.Provider>

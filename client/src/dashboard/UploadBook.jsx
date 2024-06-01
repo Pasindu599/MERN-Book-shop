@@ -10,6 +10,7 @@ import {
   TextInput,
   Textarea,
 } from "flowbite-react";
+import { baseURL } from "../constants";
 
 function UploadBook() {
   const { user } = useContext(AuthContext);
@@ -85,7 +86,7 @@ function UploadBook() {
     };
     console.log(productData);
 
-    fetch("http://localhost:5000/api/books/upload-book", {
+    fetch(`${baseURL}/api/books/upload-book`, {
       method: "POST",
       body: JSON.stringify(productData),
       headers: {

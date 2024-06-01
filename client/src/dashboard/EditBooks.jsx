@@ -9,6 +9,7 @@ import {
   TextInput,
   Textarea,
 } from "flowbite-react";
+import { baseURL } from "../constants";
 function EditBooks() {
   const { id } = useParams();
   const {
@@ -51,9 +52,7 @@ function EditBooks() {
 
     if (imageInput.files.length > 0) {
       const file = imageInput.files[0];
-      const { url } = await fetch("http://localhost:5000/s3Url").then((res) =>
-        res.json()
-      );
+      const { url } = await fetch(`${baseURL}/s3Url`).then((res) => res.json());
 
       await fetch(url, {
         method: "PUT",
@@ -87,7 +86,7 @@ function EditBooks() {
     };
     console.log(productData);
 
-    fetch(`http://localhost:5000/api/books/book/${id}`, {
+    fetch(`${baseURL}/api/books/book/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

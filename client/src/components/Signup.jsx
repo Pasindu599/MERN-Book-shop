@@ -1,11 +1,12 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthProvider";
 import AuthProvider from "../contexts/AuthProvider";
-
+import { baseURL } from "../constants";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function Signup() {
-  const { createUser, loginWithGoogle } = useContext(AuthContext);
+  const { createUser, loginWithGoogle, deleteUserAccount } =
+    useContext(AuthContext);
 
   const [error, setError] = useState("error");
 
@@ -34,20 +35,29 @@ function Signup() {
       const userEmail = email.toLowerCase();
 
       // Add user to the database
-      const response = await fetch("http://localhost:5000/api/users/signup", {
-        method: "POST",
-        body: JSON.stringify({ name, userEmail: userEmail, mobile }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      try {
+        const response = await fetch(`${baseURL}/api/users/signup`, {
+          method: "POST",
+          body: JSON.stringify({ name, userEmail: userEmail, mobile }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
 
-      const data = await response.json();
-      console.log(data);
-      alert("Sign up successfully");
-
-      // Navigate after successful signup
-      navigate(from, { replace: true });
+            navigate(from, { replace: true });
+          });
+      } catch (error) {
+        //delete user from firebase
+        await deleteUserAccount();
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        setError(errorMessage);
+        alert(errorMessage);
+      }
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
@@ -60,59 +70,63 @@ function Signup() {
   const handleGoogleSignIn = async () => {
     let userEmail;
     let name;
-    await loginWithGoogle()
-      .then(async (userCredential) => {
-        const user = await userCredential.user;
-        console.log(userCredential.user);
-        userEmail = await userCredential.user.email;
-        name = await userCredential.user.displayName;
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-        alert(errorMessage);
-        setError(errorMessage);
-      });
+    setError([]);
 
-    console.log(userEmail, "email");
-    console.log(name, "name");
+    try {
+      const userCredential = await loginWithGoogle();
+      const user = userCredential.user;
 
-    //add user to the database
-    await fetch("http://localhost:5000/api/users/signup", {
-      method: "POST",
-      body: JSON.stringify({ userEmail, name }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
+      console.log(user);
+      userEmail = user.email;
+      name = user.displayName;
+
+      console.log(userEmail, "email");
+      console.log(name, "name");
+
+      try {
+        const response = await fetch(`${baseURL}/api/users/signup`, {
+          method: "POST",
+          body: JSON.stringify({ userEmail, name }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await response.json();
         console.log(data);
         navigate(from, { replace: true });
-      })
-      .catch((error) => {
+      } catch (error) {
+        //delete user from firebase
+        await deleteUserAccount();
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
         alert(errorMessage);
         setError(errorMessage);
-      });
+      }
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+      alert(errorMessage);
+      setError(errorMessage);
+    }
   };
+
   return (
-    <div class="">
-      <div class="p-8 lg:w-1/2 mx-auto">
-        <div class="bg-white rounded-t-lg p-8">
-          <p class="text-center text-sm text-gray-400 font-light">
+    <div className="">
+      <div className="p-8 lg:w-1/2 mx-auto">
+        <div className="bg-white rounded-t-lg p-8">
+          <p className="text-center text-sm text-gray-400 font-light">
             Sign up with
           </p>
           <div>
-            <div class="flex items-center justify-center space-x-4 mt-3">
-              <button class="flex items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
+            <div className="flex items-center justify-center space-x-4 mt-3">
+              <button className="flex items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 16 16"
-                  class="w-6 h-6 mr-3"
+                  className="w-6 h-6 mr-3"
                 >
                   <path
                     fill-rule="evenodd"
@@ -123,11 +137,11 @@ function Signup() {
               </button>
               <button
                 onClick={handleGoogleSignIn}
-                class="flex items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+                className="flex items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="w-6 h-6 mr-3"
+                  className="w-6 h-6 mr-3"
                   viewBox="0 0 48 48"
                 >
                   <path
@@ -152,27 +166,27 @@ function Signup() {
             </div>
           </div>
         </div>
-        <div class="bg-orange-100 rounded-b-lg py-12 px-4 lg:px-24">
-          <p class="text-center text-sm text-gray-500 font-light">
+        <div className="bg-orange-100 rounded-b-lg py-12 px-4 lg:px-24">
+          <p className="text-center text-sm text-gray-500 font-light">
             Or If you have an account .Please{" "}
             <a href="/login">
-              <span class="text-indigo-500 font-bold underline">login</span>
+              <span className="text-indigo-500 font-bold underline">login</span>
             </a>{" "}
             here
           </p>
-          <form class="mt-6" onSubmit={handleSignUp}>
-            <div class="relative">
+          <form className="mt-6" onSubmit={handleSignUp}>
+            <div className="relative">
               <input
-                class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600  transition  rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+                className="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600  transition  rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
                 id="name"
                 type="text"
                 placeholder="Name"
                 name="name"
               />
-              <div class="absolute left-0 inset-y-0 flex items-center">
+              <div className="absolute left-0 inset-y-0 flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-7 w-7 ml-3 text-gray-400 p-1"
+                  className="h-7 w-7 ml-3 text-gray-400 p-1"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -181,18 +195,18 @@ function Signup() {
                 </svg>
               </div>
             </div>
-            <div class="relative mt-3">
+            <div className="relative mt-3">
               <input
-                class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600  transition  rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+                className="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600  transition  rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
                 id="email"
                 type="text"
                 placeholder="Email"
                 name="email"
               />
-              <div class="absolute left-0 inset-y-0 flex items-center">
+              <div className="absolute left-0 inset-y-0 flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-7 w-7 ml-3 text-gray-400 p-1"
+                  className="h-7 w-7 ml-3 text-gray-400 p-1"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -201,18 +215,18 @@ function Signup() {
                 </svg>
               </div>
             </div>
-            <div class="relative mt-3">
+            <div className="relative mt-3">
               <input
-                class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600  transition  rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+                className="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600  transition  rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
                 id="password"
                 type="password"
                 placeholder="Password"
                 name="password"
               />
-              <div class="absolute left-0 inset-y-0 flex items-center">
+              <div className="absolute left-0 inset-y-0 flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-7 w-7 ml-3 text-gray-400 p-1"
+                  className="h-7 w-7 ml-3 text-gray-400 p-1"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -220,18 +234,18 @@ function Signup() {
                 </svg>
               </div>
             </div>
-            <div class="relative mt-3">
+            <div className="relative mt-3">
               <input
-                class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600  transition  rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+                className="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600  transition  rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
                 id="mobile"
                 type="text"
                 placeholder="Mobile Number"
                 name="mobile"
               />
-              <div class="absolute left-0 inset-y-0 flex items-center">
+              <div className="absolute left-0 inset-y-0 flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-7 w-7 ml-3 text-gray-400 p-1"
+                  className="h-7 w-7 ml-3 text-gray-400 p-1"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -239,19 +253,19 @@ function Signup() {
                 </svg>
               </div>
             </div>
-            <div class="mt-4 flex items-center text-gray-500">
+            <div className="mt-4 flex items-center text-gray-500">
               {/* <input
                 type="checkbox"
                 id="remember"
                 name="remember"
-                class="mr-3"
+                className="mr-3"
               /> */}
               {/* <label for="remember">Remember me</label> */}
             </div>
-            <div class="flex items-center justify-center mt-8">
+            <div className="flex items-center justify-center mt-8">
               <button
                 type="submit"
-                class="text-white py-2 px-4 uppercase rounded bg-indigo-500 hover:bg-indigo-600 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+                className="text-white py-2 px-4 uppercase rounded bg-indigo-500 hover:bg-indigo-600 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
               >
                 Sign up
               </button>
