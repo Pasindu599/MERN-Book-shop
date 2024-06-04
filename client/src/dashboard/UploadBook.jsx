@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { useState } from "react";
 import { AuthContext } from "../contexts/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 import {
   Button,
@@ -10,10 +11,17 @@ import {
   TextInput,
   Textarea,
 } from "flowbite-react";
-import { baseURL } from "../constants";
+
+import { baseURL, assetsURL } from "../../constants";
 
 function UploadBook() {
+  const from = location.state?.from?.pathname || "/";
   const { user } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+
   console.log(user);
 
   const [email, setEmail] = useState("");
@@ -50,9 +58,13 @@ function UploadBook() {
 
     const imageInput = document.getElementById("productImage");
     const file = imageInput.files[0];
-    const { url } = await fetch("http://localhost:5000/s3Url").then((res) =>
-      res.json()
-    );
+    const { url } = await fetch(`${assetsURL}/s3Url/upload-file/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((res) => res.json());
 
     await fetch(url, {
       method: "PUT",
@@ -86,17 +98,24 @@ function UploadBook() {
     };
     console.log(productData);
 
-    fetch(`${baseURL}/api/books/upload-book`, {
+    fetch(`${baseURL}/books/upload-book`, {
       method: "POST",
       body: JSON.stringify(productData),
       headers: {
         "Content-Type": "application/json",
+
+        Authorization: `Bearer ${token}`,
       },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 401) {
+          alert("Unauthorized");
+          navigate("/login", { replace: true });
+        }
+      })
       .then((data) => {
         // console.log(data);
-        // formData.reset();
+        formData.reset();
         alert("Product uploaded successfully");
       })
       .catch((err) => {

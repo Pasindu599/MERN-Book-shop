@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import ProductCards from "../components/ProductCards";
 
+import { baseURL } from "../../constants";
+
 function OtherBooks() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/books/all-books")
+    fetch(`${baseURL}/books/all-books`)
       .then((response) => response.json())
       .then((data) => setProducts(data.books.slice(0, 8)));
   }, []);

@@ -4,8 +4,10 @@ import { Navigate, useLocation } from "react-router-dom";
 import { Spinner } from "flowbite-react";
 
 function PrivateRoute({ children }) {
-  const { user, loading } = useContext(AuthContext);
+  const { user, loading, token } = useContext(AuthContext);
+
   const loaction = useLocation();
+  console.log(user, loading, token);
 
   if (loading) {
     return (
@@ -14,7 +16,8 @@ function PrivateRoute({ children }) {
       </div>
     );
   }
-  if (user) {
+
+  if (user && token) {
     return children;
   }
 

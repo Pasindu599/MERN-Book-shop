@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useState } from "react";
-import { useParams, useLoaderData } from "react-router-dom";
+import { useParams, useLoaderData, useNavigate } from "react-router-dom";
 import {
   Button,
   Checkbox,
@@ -9,9 +9,18 @@ import {
   TextInput,
   Textarea,
 } from "flowbite-react";
-import { baseURL } from "../constants";
+
+import { AuthContext } from "../contexts/AuthProvider";
+
+import { baseURL, assetsURL } from "../../constants";
+
 function EditBooks() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
+
+  const { token } = useContext(AuthContext);
+
   const {
     productName,
     description,
@@ -52,7 +61,9 @@ function EditBooks() {
 
     if (imageInput.files.length > 0) {
       const file = imageInput.files[0];
-      const { url } = await fetch(`${baseURL}/s3Url`).then((res) => res.json());
+      const { url } = await fetch(`${assetsURL}/s3Url/upload-file`, {
+        method: "GET",
+      }).then((res) => res.json());
 
       await fetch(url, {
         method: "PUT",
@@ -85,19 +96,29 @@ function EditBooks() {
       salePrice,
     };
     console.log(productData);
+    console.log(token);
 
-    fetch(`${baseURL}/api/books/book/${id}`, {
+    fetch(`${baseURL}/books/book/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(productData),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        //check unauth
+        if (res.status === 401) {
+          alert("Unauthenticated");
+          // go to login
+          return navigate("/login", { replace: true });
+        }
+      })
       .then((data) => {
         console.log(data);
         formData.reset();
         alert("Product updated successfully");
+        navigate("/admin/dashboard", { replace: true });
       })
       .catch((err) => {
         console.log(err);

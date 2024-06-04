@@ -1,11 +1,13 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthProvider";
 import AuthProvider from "../contexts/AuthProvider";
-import { baseURL } from "../constants";
+
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { baseURL } from "../../constants";
+
 function Signup() {
-  const { createUser, loginWithGoogle, deleteUserAccount } =
+  const { createUser, loginWithGoogle, deleteUserAccount, token, changeToken } =
     useContext(AuthContext);
 
   const [error, setError] = useState("error");
@@ -36,17 +38,28 @@ function Signup() {
 
       // Add user to the database
       try {
-        const response = await fetch(`${baseURL}/api/users/signup`, {
+        await fetch(`${baseURL}/users/signup`, {
           method: "POST",
           body: JSON.stringify({ name, userEmail: userEmail, mobile }),
           headers: {
             "Content-Type": "application/json",
           },
         })
-          .then((res) => res.json())
+          .then(async (res) => {
+            if (!res.ok) {
+              await deleteUserAccount();
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              console.log(errorCode, errorMessage);
+              setError(errorMessage);
+              alert(errorMessage);
+            }
+
+            return res.json();
+          })
           .then((data) => {
             console.log(data);
-
+            changeToken(data.token);
             navigate(from, { replace: true });
           });
       } catch (error) {
@@ -63,7 +76,7 @@ function Signup() {
       const errorMessage = error.message;
       console.log(errorCode, errorMessage);
       setError(errorMessage);
-      alert(errorMessage);
+      alert(errorCode);
     }
   };
 
@@ -84,7 +97,7 @@ function Signup() {
       console.log(name, "name");
 
       try {
-        const response = await fetch(`${baseURL}/api/users/signup`, {
+        const response = await fetch(`${baseURL}/users/signup/google`, {
           method: "POST",
           body: JSON.stringify({ userEmail, name }),
           headers: {
@@ -92,8 +105,19 @@ function Signup() {
           },
         });
 
+        console.log(response.ok);
+
+        if (!response.ok) {
+          await deleteUserAccount();
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode, errorMessage);
+          setError(errorMessage);
+          alert(errorMessage);
+        }
         const data = await response.json();
         console.log(data);
+        changeToken(data.token);
         navigate(from, { replace: true });
       } catch (error) {
         //delete user from firebase
@@ -109,7 +133,7 @@ function Signup() {
       const errorMessage = error.message;
       console.log(errorCode, errorMessage);
       alert(errorMessage);
-      setError(errorMessage);
+      setError(errorCode);
     }
   };
 

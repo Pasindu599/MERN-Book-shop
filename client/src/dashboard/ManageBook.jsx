@@ -2,17 +2,21 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Table } from "flowbite-react";
 import { AuthContext } from "../contexts/AuthProvider";
-import { baseURL } from "../constants";
+
+import { baseURL } from "../../constants";
 
 function ManageBook() {
-  const { user } = useContext(AuthContext);
+  const { user, token } = useContext(AuthContext);
   console.log(user);
 
   const [allProducts, setAllProducts] = useState([]);
 
   const handleDelete = (product_id) => {
-    fetch(`${baseURL}/api/books/book/${product_id}`, {
+    fetch(`${baseURL}/books/book/${product_id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((res) => res.json())
       .then((data) => {
@@ -31,7 +35,7 @@ function ManageBook() {
     if (!user) return;
     const userEmail = user.email;
 
-    fetch(`${baseURL}/api/users/products/${userEmail}`, {
+    fetch(`${baseURL}/users/products/${userEmail}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

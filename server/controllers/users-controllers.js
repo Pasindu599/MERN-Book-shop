@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { validationResult } = require("express-validator");
 const HttpError = require("../models/http-error");
 const e = require("express");
+const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 const Book = require("../models/book");
@@ -157,7 +158,108 @@ const signupUser = async (req, res, next) => {
     return next(error);
   }
 
-  res.status(201).json({ user: createdUser });
+  let token;
+  try {
+    token = jwt.sign(
+      { userId: createdUser.id, userEmail: createdUser.userEmail },
+      "supersecret_dont_share",
+      { expiresIn: "1h" }
+    );
+  } catch (err) {
+    const error = new HttpError("Signing up failed, please try again.", 500);
+    return next(error);
+  }
+
+  res.status(201).json({ user: createdUser, token: token });
+};
+
+// for google sign up
+
+const signupUserGoogle = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors);
+    return next(
+      new HttpError("Invalid inputs passed, please check your data.", 422)
+    );
+  }
+
+  const {
+    name,
+    userEmail,
+    mobile,
+    address,
+    city,
+    state,
+    zip,
+    country,
+    paymentMethod,
+  } = req.body;
+
+  let existingUser;
+  try {
+    existingUser = await User.findOne({ userEmail: userEmail });
+  } catch (err) {
+    const error = new HttpError(
+      "Signing up failed, please try again later.",
+      500
+    );
+    return next(error);
+  }
+  if (!existingUser) {
+    const createdUser = new User({
+      name,
+      userEmail,
+      mobile,
+      address,
+      city,
+      state,
+      zip,
+      country,
+      paymentMethod,
+      products: [],
+    });
+
+    try {
+      const sess = await mongoose.startSession();
+      sess.startTransaction();
+      console.log(createdUser);
+      await createdUser.save({ session: sess });
+      existingUser = createdUser;
+      await sess.commitTransaction();
+    } catch (err) {
+      const error = new HttpError(
+        "Creating user failed, please try again.",
+        500
+      );
+      return next(error);
+    }
+  } else {
+    console.log("User already exists");
+  }
+
+  let token;
+
+  token = jwt.sign(
+    { userId: existingUser.id, userEmail: existingUser.userEmail },
+    "supersecret_dont_share",
+    { expiresIn: "1h" }
+  );
+
+  res.status(201).json({ user: existingUser, token: token });
+};
+
+const loginUser = async (req, res, next) => {
+  let token;
+  const { userEmail } = req.body;
+
+  token = jwt.sign(
+    { userId: userEmail.id, userEmail: userEmail.userEmail },
+    "supersecret_dont_share",
+    { expiresIn: "1h" }
+  );
+
+  res.status(201).json({ user: userEmail, token: token });
 };
 
 const updateUser = async (req, res, next) => {
@@ -286,3 +388,5 @@ exports.getUserById = getUserById;
 exports.getProductsByUserId = getProductsByUserId;
 exports.getUserByEmail = getUserByEmail;
 exports.getProductsByEmail = getProductsByEmail;
+exports.signupUserGoogle = signupUserGoogle;
+exports.loginUser = loginUser;

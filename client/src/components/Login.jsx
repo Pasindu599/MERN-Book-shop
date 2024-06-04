@@ -1,12 +1,22 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthProvider";
 import AuthProvider from "../contexts/AuthProvider";
 
 import { useLocation, useNavigate } from "react-router-dom";
-import { baseURL } from "../constants";
+
+import { baseURL } from "../../constants";
 
 function Login() {
-  const { createUser, loginWithGoogle, login } = useContext(AuthContext);
+  const {
+    createUser,
+    loginWithGoogle,
+    login,
+    deleteUserAccount,
+    token,
+    changeToken,
+
+    user,
+  } = useContext(AuthContext);
 
   const [error, setError] = useState();
 
@@ -18,6 +28,7 @@ function Login() {
   console.log(from);
 
   const handleLogin = (e) => {
+    setError([]);
     e.preventDefault();
     const form = e.target;
     const email = form.email.value;
@@ -25,6 +36,24 @@ function Login() {
     login(email, password)
       .then((userCredential) => {
         const user = userCredential.user;
+        try {
+          fetch(`${baseURL}/users/login`, {
+            method: "POST",
+            body: JSON.stringify({ userEmail: email }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              console.log(data);
+              changeToken(data.token);
+            });
+        } catch (error) {
+          console.log(error);
+          setError(error);
+          return alert("Error in login");
+        }
         alert("Sign in successfully");
         navigate(from, { replace: true });
       })
@@ -55,45 +84,62 @@ function Login() {
   const handleGoogleSignIn = async () => {
     let userEmail;
     let name;
-    await loginWithGoogle()
-      .then(async (userCredential) => {
-        const user = await userCredential.user;
-        console.log(userCredential.user);
-        userEmail = await userCredential.user.email;
-        name = await userCredential.user.displayName;
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-        alert(errorMessage);
-        setError(errorMessage);
-      });
+    setError([]);
 
-    console.log(userEmail, "email");
-    console.log(name, "name");
+    try {
+      const userCredential = await loginWithGoogle();
+      const user = userCredential.user;
 
-    //add user to the database
-    await fetch(`${baseURL}/api/users/signup`, {
-      method: "POST",
-      body: JSON.stringify({ userEmail, name }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
+      console.log(user);
+      userEmail = user.email;
+      name = user.displayName;
+
+      console.log(userEmail, "email");
+      console.log(name, "name");
+
+      try {
+        const response = await fetch(`${baseURL}/users/signup/google`, {
+          method: "POST",
+          body: JSON.stringify({ userEmail, name }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          await deleteUserAccount();
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode, errorMessage);
+          setError(errorMessage);
+          alert(errorMessage);
+          throw new Error("Something went wrong");
+        }
+        const data = await response.json();
+
+        changeToken(data.token);
+
         console.log(data);
         navigate(from, { replace: true });
-      })
-      .catch((error) => {
+      } catch (error) {
+        //delete user from firebase
+        await deleteUserAccount();
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
         alert(errorMessage);
         setError(errorMessage);
-      });
+        throw new Error("Something went wrong");
+      }
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+      alert(errorMessage);
+      setError(errorCode);
+    }
   };
+
   return (
     <div class="">
       <div class="p-8 lg:w-1/2 mx-auto">

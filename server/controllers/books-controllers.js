@@ -170,6 +170,7 @@ const updateBook = async (req, res, next) => {
       ...updateBookData,
     },
   };
+
   const result = await Book.updateOne(filter, updateDoc, options);
   res.status(201).json({ book: result });
 };
@@ -192,6 +193,11 @@ const deleteBook = async (req, res, next) => {
 
   if (!book) {
     const error = new HttpError("Could not find book for this id.", 404);
+    return next(error);
+  }
+
+  if (book.user._id.toString() !== req.userData.userId) {
+    const error = new HttpError("You are not allowed to delete this book", 401);
     return next(error);
   }
 
