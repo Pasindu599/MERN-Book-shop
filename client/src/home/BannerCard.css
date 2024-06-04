@@ -14,22 +14,22 @@
 }
 
 .banner .swiper-slide:nth-child(1n) {
-  background-image: url("src/assets/book-banners/image4.jpeg");
+  background-image: url("https://cdn1.vectorstock.com/i/1000x1000/25/00/yard-sale-rubber-stamp-vector-12792500.jpg");
   background-size: cover;
 }
 
 .banner .swiper-slide:nth-child(2n) {
-  background-image: url("src/assets/book-banners/image2.jpg");
+  background-image: url("https://jerryoftheday.net/cdn/shop/products/1000x1000whitebacktee_1000x1000.jpg?v=1645044987");
 }
 
 .banner .swiper-slide:nth-child(3n) {
-  background-image: url("src/assets/book-banners/image1.jpeg");
+  background-image: url("https://www.agrisupply.com/images/xxl/12371.webp?v=1");
 }
 
 .banner .swiper-slide:nth-child(4n) {
-  background-image: url("src/assets/book-banners/image3.jpg");
+  background-image: url("https://m.media-amazon.com/images/I/611dWYD1ZLL.jpg");
 }
 
 .banner .swiper-slide:nth-child(5n) {
-  background-image: url("src/assets/book-banners/image5.jpg");
+  background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkcTMGT51F_URyFASQNMgbyH_-E4lUs1tFfw&s");
 }

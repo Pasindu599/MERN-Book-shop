@@ -46,7 +46,7 @@ app.use((error, req, res, next) => {
 
 mongoose.connect(process.env.MONGO_URI).then(() => {
   console.log("Connected to database!");
-  app.listen(5000);
+  app.listen(process.env.PORT || 5000);
 });
 
 module.exports = app;

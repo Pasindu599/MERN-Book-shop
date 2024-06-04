@@ -113,12 +113,13 @@ function EditBooks() {
           // go to login
           return navigate("/login", { replace: true });
         }
+        return res.json();
       })
       .then((data) => {
         console.log(data);
         formData.reset();
         alert("Product updated successfully");
-        navigate("/admin/dashboard", { replace: true });
+        navigate("/admin/dashboard/", { replace: true });
       })
       .catch((err) => {
         console.log(err);

@@ -3,6 +3,8 @@ const { validationResult } = require("express-validator");
 const HttpError = require("../models/http-error");
 const e = require("express");
 const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const User = require("../models/user");
 const Book = require("../models/book");
@@ -162,7 +164,7 @@ const signupUser = async (req, res, next) => {
   try {
     token = jwt.sign(
       { userId: createdUser.id, userEmail: createdUser.userEmail },
-      "supersecret_dont_share",
+      process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
   } catch (err) {
@@ -242,7 +244,7 @@ const signupUserGoogle = async (req, res, next) => {
 
   token = jwt.sign(
     { userId: existingUser.id, userEmail: existingUser.userEmail },
-    "supersecret_dont_share",
+    process.env.JWT_SECRET,
     { expiresIn: "1h" }
   );
 
@@ -255,7 +257,7 @@ const loginUser = async (req, res, next) => {
 
   token = jwt.sign(
     { userId: userEmail.id, userEmail: userEmail.userEmail },
-    "supersecret_dont_share",
+    process.env.JWT_SECRET,
     { expiresIn: "1h" }
   );
 

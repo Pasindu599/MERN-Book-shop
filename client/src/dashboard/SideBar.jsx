@@ -38,7 +38,7 @@ function SideBar() {
           >
             Upload Product
           </Sidebar.Item>
-          <Sidebar.Item href="/admin/dashboard" icon={HiInbox}>
+          <Sidebar.Item href="/admin/dashboard/" icon={HiInbox}>
             Manage Products
           </Sidebar.Item>
           <Sidebar.Item href="#" icon={HiUser}>
