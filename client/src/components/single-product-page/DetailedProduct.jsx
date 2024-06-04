@@ -11,6 +11,7 @@ function DetailedProduct() {
     salePrice,
     normalPrice,
     discount,
+    user,
   } = useLoaderData();
   return (
     <div>
@@ -26,7 +27,7 @@ function DetailedProduct() {
         <h1 className="font-bold text-3xl mb-4 md:text-5xl md:mb-10">
           {productName}
         </h1>
-        <p className="mb-5">user name</p>
+        <p className="mb-5">{user.name}</p>
       </div>
       {/* Product Description */}
       <p className="text-black mb-5 text-sm leading-[22px] md:text-base">

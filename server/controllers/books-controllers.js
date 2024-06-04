@@ -5,6 +5,7 @@ const e = require("express");
 
 const Book = require("../models/book");
 const User = require("../models/user");
+const user = require("../models/user");
 
 const getBooks = async (req, res, next) => {
   let books;
@@ -61,7 +62,9 @@ const getBookById = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({ book: book.toObject({ getters: true }) });
+  res.json({
+    book: book.toObject({ getters: true }),
+  });
 };
 
 const uploadBook = async (req, res, next) => {

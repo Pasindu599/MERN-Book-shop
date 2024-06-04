@@ -31,6 +31,8 @@ const EditBooks = React.lazy(() => import("../dashboard/EditBooks"));
 const Signup = React.lazy(() => import("../components/Signup"));
 const Login = React.lazy(() => import("../components/Login"));
 
+const NewShop = React.lazy(() => import("../shop/NewShop"));
+
 import { baseURL } from "../../constants";
 
 const router = createBrowserRouter([
@@ -44,7 +46,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/shop/",
-        element: <Shop />,
+        element: <NewShop />,
       },
       {
         path: "/about/",
