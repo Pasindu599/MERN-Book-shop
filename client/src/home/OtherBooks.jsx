@@ -13,7 +13,7 @@ function OtherBooks() {
   }, []);
   return (
     <div>
-      <ProductCards products={products} headline="Best Products" />
+      <ProductCards products={products} headline="Latest Products" />
     </div>
   );
 }

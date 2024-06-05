@@ -4,16 +4,18 @@ import FavBook from "./AllProducts";
 import OtherBooks from "./OtherBooks";
 import PromoBanner from "./PromoBanner";
 import Review from "./Review";
+import AllCategories from "./AllCategories";
 
 export default function Home() {
   return (
     <>
       <Banner />
-      <BestSellerBooks />
+      {/* <BestSellerBooks /> */}
+      <AllCategories />
       <FavBook />
       <PromoBanner />
       <OtherBooks />
-      <Review />
+      {/* <Review /> */}
     </>
   );
 }

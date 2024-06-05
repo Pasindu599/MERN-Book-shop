@@ -14,29 +14,43 @@ const Price = ({ handleChange }) => {
 
         <Input
           handleChange={handleChange}
-          value={"0-50"}
-          title="$0 - 50"
+          value={"0-5000"}
+          title="Rs.0 - Rs.5,000"
           name="test2"
         />
 
         <Input
           handleChange={handleChange}
-          value={"50-100"}
-          title="$50 - $100"
+          value={"5000-25000"}
+          title="Rs.5,000 - Rs.25,000"
           name="test2"
         />
 
         <Input
           handleChange={handleChange}
-          value={"100-150"}
-          title="$100 - $150"
+          value={"25000-50000"}
+          title="Rs.25,000 - Rs.50,000"
           name="test2"
         />
 
         <Input
           handleChange={handleChange}
-          value={"150-10000000000000"}
-          title="Over $150"
+          value={"50000-100000"}
+          title="Rs.50,000 - Rs.100,000"
+          name="test2"
+        />
+
+        <Input
+          handleChange={handleChange}
+          value={"100000-200000"}
+          title="Rs.100,000 - Rs.200,000"
+          name="test2"
+        />
+
+        <Input
+          handleChange={handleChange}
+          value={"200000-10000000000000"}
+          title="Over Rs.200,000"
           name="test2"
         />
       </div>

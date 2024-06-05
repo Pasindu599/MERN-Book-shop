@@ -1,8 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import FavProductImg from "../assets/single-product/image-product-1.jpg";
 import { Link } from "react-router-dom";
 
 function AllProducts() {
+  const [usersCount, setUsersCount] = React.useState(0);
+  const [productsCount, setProductsCount] = React.useState(0);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/users/all-users") // fetch all users
+      .then((response) => response.json())
+      .then((data) => {
+        setUsersCount(data.users.length);
+      });
+
+    fetch("http://localhost:5000/api/books/all-books") // fetch all products
+      .then((response) => response.json())
+      .then((data) => {
+        setProductsCount(data.books.length);
+      });
+  }, []);
+
   return (
     <div className="px-4 lg:px-24 my-20 flex flex-col md:flex-row justify-between items-center gap-12">
       <div className="md:w-1/2">
@@ -15,24 +32,23 @@ function AllProducts() {
           <span className="text-orange-700 ">Come and See!</span>
         </h2>
         <p className="mb-10 text-lg md:w-5/6">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis
-          perferendis laborum ipsa nostrum suscipit excepturi eveniet quo fugiat
-          consequuntur molestiae aperiam temporibus, ut nemo itaque quidem quas
-          iusto enim dicta.
+          At YardSaleHub, our mission is to create a seamless and enjoyable
+          experience for both sellers and buyers. We believe that yard sales are
+          more than just a way to exchange goods.
         </p>
-        <div className="flex flex-col sm:flex-row justify-between gap-6 md:w-3/4 my-14">
+        <div className="flex flex-col sm:flex-row justify-left gap-10 md:w-3/4 my-14">
           <div>
-            <h3 className="text-3xl font-bold">800+</h3>
+            <h3 className="text-3xl font-bold text-center">{productsCount}</h3>
             <p className="text-base">Product Listing</p>
           </div>
           <div>
-            <h3 className="text-3xl font-bold">550+</h3>
+            <h3 className="text-3xl font-bold text-center">{usersCount}</h3>
             <p className="text-base">Register Users</p>
           </div>
-          <div>
+          {/* <div>
             <h3 className="text-3xl font-bold">1200+</h3>
             <p className="text-base">Reviews</p>
-          </div>
+          </div> */}
         </div>
 
         <Link to="/shop" className="mt-12 block">

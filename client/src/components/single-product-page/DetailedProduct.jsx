@@ -1,7 +1,7 @@
 import React from "react";
 import { useLoaderData, useParams } from "react-router-dom";
 
-function DetailedProduct() {
+function DetailedProduct({ username }) {
   const {
     _id,
     productName,
@@ -27,11 +27,19 @@ function DetailedProduct() {
         <h1 className="font-bold text-3xl mb-4 md:text-5xl md:mb-10">
           {productName}
         </h1>
-        <p className="mb-5">{user.name}</p>
+        <p className="mb-5">Published by: {username}</p>
       </div>
       {/* Product Description */}
       <p className="text-black mb-5 text-sm leading-[22px] md:text-base">
-        {description}
+        {
+          // print line by line
+          description.split("\n").map((line, index) => (
+            <span key={index}>
+              {line}
+              <br />
+            </span>
+          ))
+        }
       </p>
 
       {/* Product Price */}

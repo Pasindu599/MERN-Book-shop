@@ -283,11 +283,11 @@ const updateUser = async (req, res, next) => {
 
   const updateDoc = {
     $set: {
-      ...updateBookData,
+      ...updateUserData,
     },
   };
   const result = await User.updateOne(filter, updateDoc, options);
-  res.status(201).json({ book: result });
+  res.status(201).json({ user: result });
 };
 
 const deleteUser = async (req, res, next) => {

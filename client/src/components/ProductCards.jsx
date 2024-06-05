@@ -13,6 +13,7 @@ import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
 import { FaCartShopping } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import Card from "./Card";
 
 function ProductCards({ headline, products }) {
   return (
@@ -20,7 +21,7 @@ function ProductCards({ headline, products }) {
       <h2 className="text-5xl font-bold  text-orange-800 text-center my-5">
         {headline}
       </h2>
-      <div className="mt-12">
+      <div>
         <Swiper
           slidesPerView={1}
           spaceBetween={10}
@@ -37,44 +38,51 @@ function ProductCards({ headline, products }) {
               spaceBetween: 40,
             },
             1024: {
-              slidesPerView: 5,
+              slidesPerView: 4,
               spaceBetween: 50,
             },
           }}
           modules={[Pagination]}
-          className="mySwiper w-full h-full "
+          className="mySwiper w-full h-fill "
         >
           {products.map((product) => (
-            <SwiperSlide key={product._id} className="mb-10">
+            <SwiperSlide key={product._id} className="mb-10 ">
               <Link to={`/book/${product._id}`} key={product._id}>
-                <div className="relative">
-                  <img
-                    className="w-full h-full  rounded-lg object-scale-down"
-                    key={product._id}
-                    src={product.productImage}
-                    alt={product.productName}
-                  />
-                  <div className="absolute top-3 right-3 bg-orange-600 hover:bg-black p-2 rounded">
-                    <FaCartShopping className="w-4 h-4 text-white" />
-                  </div>
-                </div>
-                <div className="flex flex-col w-ful ">
-                  <div>
-                    <h3 className="text-xl font-bold text-center text-orange-700">
-                      {product.productName}
-                    </h3>
-                  </div>
-                  <div>
-                    <p className="text-center text-orange-500 font-semibold">
-                      {" "}
-                      Rs. {product.salePrice}
-                    </p>
-                  </div>
-                </div>
+                <Card
+                  img={product.productImage}
+                  title={product.productName}
+                  prevPrice={product.normalPrice}
+                  newPrice={product.salePrice}
+                  discount={product.discount}
+                  id={product.id}
+                />
               </Link>
             </SwiperSlide>
           ))}
         </Swiper>
+        {/* 
+        <div className="grid gap-8 my-12 lg:grid-cols-4 sm:grid-cols-2 md:grid-cols-3 grid-cols-1">
+          {products.map(
+            ({
+              productImage,
+              productName,
+              normalPrice,
+              salePrice,
+              discount,
+              _id,
+            }) => (
+              <Card
+                key={Math.random()}
+                img={productImage}
+                title={productName}
+                prevPrice={normalPrice}
+                newPrice={salePrice}
+                discount={discount}
+                id={_id}
+              />
+            )
+          )} */}
+        {/* </div> */}
       </div>
     </div>
   );

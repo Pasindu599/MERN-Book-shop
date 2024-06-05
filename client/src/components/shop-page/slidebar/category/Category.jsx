@@ -8,7 +8,7 @@ function Category({ handleChange }) {
 
       <div>
         <label className="sidebar-label-container">
-          <input onChange={handleChange} type="radio" value="" name="test" />
+          <input onChange={handleChange} type="radio" value="all" name="test" />
           <span className="checkmark"></span>All
         </label>
         <Input

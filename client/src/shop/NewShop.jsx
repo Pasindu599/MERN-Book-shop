@@ -7,9 +7,11 @@ import Products from "../components/shop-page/products/Products";
 import Card from "../components/Card";
 
 import { baseURL } from "../../constants";
+import { useParams } from "react-router-dom";
 
 function NewShop() {
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState([]);
   const handleChange = (event) => {
@@ -39,18 +41,20 @@ function NewShop() {
       console.log(selected);
 
       // if selected is  a list  of price
-      if (selected.includes("-")) {
-        const [min, max] = selected.split("-");
+      if (selected !== "all") {
+        if (selected.includes("-")) {
+          const [min, max] = selected.split("-");
 
-        filteredProducts = filteredProducts.filter(
-          ({ salePrice }) =>
-            salePrice >= Number(min) && salePrice <= Number(max)
-        );
-      } else {
-        filteredProducts = filteredProducts.filter(
-          ({ category, productName }) =>
-            category === selected || productName === selected
-        );
+          filteredProducts = filteredProducts.filter(
+            ({ salePrice }) =>
+              salePrice >= Number(min) && salePrice <= Number(max)
+          );
+        } else {
+          filteredProducts = filteredProducts.filter(
+            ({ category, productName }) =>
+              category === selected || productName === selected
+          );
+        }
       }
 
       console.log(filteredProducts);

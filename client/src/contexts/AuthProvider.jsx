@@ -10,6 +10,10 @@ import {
   signInWithEmailAndPassword,
   signOut,
   deleteUser,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+  updatePassword,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { json } from "react-router-dom";
 
@@ -23,6 +27,10 @@ export const AuthContext = createContext({
   deleteUserAccount: () => {},
   token: false,
   changeToken: () => {},
+  category: "",
+  changeCategory: () => {},
+  changePassword: () => {},
+  getResetPasswordLink: () => {},
 });
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
@@ -57,6 +65,28 @@ const AuthProvider = ({ children }) => {
   const login = (email, password) => {
     setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
+  };
+
+  const changePassword = async ({ currentPassword, newPassword }) => {
+    if (!auth.currentUser) {
+      throw new Error("No user is currently signed in");
+    }
+
+    const user = auth.currentUser;
+    const credential = EmailAuthProvider.credential(
+      user.email,
+      currentPassword
+    );
+
+    // Re-authenticate the user
+    await reauthenticateWithCredential(user, credential);
+
+    // Update the password
+    await updatePassword(user, newPassword);
+  };
+
+  const getResetPasswordLink = async (email) => {
+    return sendPasswordResetEmail(auth, email);
   };
 
   const deleteUserAccount = () => {
@@ -123,6 +153,8 @@ const AuthProvider = ({ children }) => {
         deleteUserAccount,
         token,
         changeToken,
+        changePassword,
+        getResetPasswordLink,
       }}
     >
       {children}
