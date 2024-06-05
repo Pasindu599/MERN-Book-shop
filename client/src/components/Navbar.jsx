@@ -33,7 +33,7 @@ export default function Navbar() {
   // nav items
   const navItems = [
     { link: "Home", path: "/" },
-    { link: "Shop", path: "/shop" },
+    { link: "Shop", path: "/shop/all" },
     { link: "About", path: "/about" },
     { link: "Sell Your Products", path: "/admin/dashboard/" },
   ];

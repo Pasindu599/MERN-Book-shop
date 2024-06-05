@@ -1,5 +1,6 @@
 import React from "react";
 import BannerCard from "../home/BannerCard";
+import { Link } from "react-router-dom";
 
 function Banner() {
   return (
@@ -11,23 +12,24 @@ function Banner() {
             <span className="text-orange-700">for the Best Prices</span>
           </h2>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis
-            perferendis laborum ipsa nostrum suscipit excepturi eveniet quo
-            fugiat consequuntur molestiae aperiam temporibus, ut nemo itaque
-            quidem quas iusto enim dicta.
+            Welcome to YardSale, your one-stop destination for posting and
+            finding yard sales in your community. Whether you're looking to
+            declutter your home, find a great bargain, or connect with your
+            neighbors, YardSale makes it easy and fun!
           </p>
-          <div>
-            <input
+
+          {/* <input
               type="search"
               name="search"
               id="search"
               placeholder="Search for products"
               className="py-2 px-2 rounded-s-sm outline-none"
-            />
+            /> */}
+          <Link to="/shop" className="block">
             <button className="bg-orange-700 px-6 py-2 text-white font-medium hover:bg-black transition-all ease-in duration-500">
-              Search
+              Go to the shop
             </button>
-          </div>
+          </Link>
         </div>
 
         <BannerCard />

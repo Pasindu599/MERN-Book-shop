@@ -30,8 +30,13 @@ const ManageBook = React.lazy(() => import("../dashboard/ManageBook"));
 const EditBooks = React.lazy(() => import("../dashboard/EditBooks"));
 const Signup = React.lazy(() => import("../components/Signup"));
 const Login = React.lazy(() => import("../components/Login"));
+const UserProfile = React.lazy(() => import("../dashboard/UserProfile"));
+const ChangePassword = React.lazy(() => import("../dashboard/ChangePassword"));
+
+const NewShop = React.lazy(() => import("../shop/NewShop"));
 
 import { baseURL } from "../../constants";
+import ForgetPassword from "../components/ForgetPassword";
 
 const router = createBrowserRouter([
   {
@@ -43,8 +48,8 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/shop/",
-        element: <Shop />,
+        path: "/shop/all",
+        element: <NewShop />,
       },
       {
         path: "/about/",
@@ -69,17 +74,17 @@ const router = createBrowserRouter([
       </PrivateRoute>
     ),
     children: [
-      // {
-      //   path: "/admin/dashboard",
-      //   element: (
-      //     <PrivateRoute>
-      //       <Dashboard />
-      //     </PrivateRoute>
-      //   ),
-      // },
       {
         path: "/admin/dashboard/upload",
         element: <UploadBook />,
+      },
+      {
+        path: "/admin/dashboard/profile",
+        element: <UserProfile />,
+      },
+      {
+        path: "/admin/dashboard/security/",
+        element: <ChangePassword />,
       },
       {
         path: "/admin/dashboard/",
@@ -106,6 +111,10 @@ const router = createBrowserRouter([
   {
     path: "/logout",
     element: <Logout />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgetPassword />,
   },
 ]);
 

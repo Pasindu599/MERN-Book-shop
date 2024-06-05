@@ -41,7 +41,7 @@ function SideBar() {
           <Sidebar.Item href="/admin/dashboard/" icon={HiInbox}>
             Manage Products
           </Sidebar.Item>
-          <Sidebar.Item href="#" icon={HiUser}>
+          <Sidebar.Item href="/admin/dashboard/profile" icon={HiUser}>
             User Profile
           </Sidebar.Item>
           {/* <Sidebar.Item href="#" icon={HiShoppingBag}>
@@ -49,6 +49,9 @@ function SideBar() {
           </Sidebar.Item> */}
           <Sidebar.Item href="/" icon={HiArrowSmRight}>
             Back to Home
+          </Sidebar.Item>
+          <Sidebar.Item href="/admin/dashboard/security/" icon={HiUser}>
+            Security & Privacy
           </Sidebar.Item>
           <Sidebar.Item href="/logout" icon={HiTable}>
             Sign out

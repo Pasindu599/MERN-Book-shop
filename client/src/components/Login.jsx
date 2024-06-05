@@ -28,7 +28,7 @@ function Login() {
   console.log(from);
 
   const handleLogin = (e) => {
-    setError([]);
+    setError("");
     e.preventDefault();
     const form = e.target;
     const email = form.email.value;
@@ -84,7 +84,7 @@ function Login() {
   const handleGoogleSignIn = async () => {
     let userEmail;
     let name;
-    setError([]);
+    setError("");
 
     try {
       const userCredential = await loginWithGoogle();
@@ -255,6 +255,14 @@ function Login() {
                 Your email or password is wrong
               </p>
             )}
+            <div class="mt-1">
+              <a
+                href="/forgot-password"
+                class="text-sm text-gray-500 font-light hover:underline"
+              >
+                Forgot password?
+              </a>
+            </div>
             <div class="flex items-center justify-center mt-8">
               <button
                 type="submit"
