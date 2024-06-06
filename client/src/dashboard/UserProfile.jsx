@@ -39,6 +39,8 @@ function UserProfile() {
           setLoading(false);
           console.log(data);
           alert("Profile updated successfully");
+          //page reload
+          window.location.reload();
         });
     } catch (error) {
       console.log(error);

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { AuthContext } from "../contexts/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "flowbite-react";
+import { Link } from "react-router-dom";
 
 import {
   Button,
@@ -163,7 +164,7 @@ function UploadBook() {
           setDiscount("");
           setSalePrice("");
           setIsLoading(false);
-          alert("Product uploaded successfully");
+          navigate("/admin/dashboard", { replace: true });
         })
         .catch((err) => {
           setIsLoading(false);
@@ -176,7 +177,7 @@ function UploadBook() {
       navigate("/admin/dashboard/profile", { replace: true });
     }
   };
-
+  console.log(mobile, "mobile");
   return (
     <>
       {isLoading && (
@@ -187,6 +188,18 @@ function UploadBook() {
       {!isLoading && (
         <div className="px-4 my-12 ">
           <h2 className="mb-8 text-3xl font-bold">Upload A Product</h2>
+
+          {!mobile && (
+            <h3 className="text-red-500">
+              Please enter your phone number. You can't enter a product now.
+              <Link
+                to="/admin/dashboard/profile"
+                className="text-blue-500 underline hover:text-blue-700"
+              >
+                Update Your Profile
+              </Link>
+            </h3>
+          )}
           <form
             onSubmit={handleSubmit}
             className="flex lg:w-[1180px] flex-col flex-wrap gap-4"
@@ -206,13 +219,13 @@ function UploadBook() {
               </div>
               <div className="lg:w-1/2">
                 <div className="mb-2 block">
-                  <Label htmlFor="normalPrice" value="Normal Price" />
+                  <Label htmlFor="normalPrice" value="Normal Price(Rs.)" />
                 </div>
                 <TextInput
                   id="normalPrice"
                   name="normalPrice"
                   type="text"
-                  placeholder="Normal Price"
+                  placeholder="Normal Price(Rs.)"
                   required
                   value={normalPrice}
                   onChange={handleNormalPriceChange}
@@ -277,7 +290,7 @@ function UploadBook() {
                   id="discount"
                   name="discount"
                   type="text"
-                  placeholder="Discount"
+                  placeholder="Discount(%)"
                   required
                   value={discount}
                   onChange={handleDiscountChange}
@@ -285,13 +298,13 @@ function UploadBook() {
               </div>
               <div className="lg:w-1/2">
                 <div className="mb-2 block">
-                  <Label htmlFor="salePrice" value="Sale Price" />
+                  <Label htmlFor="salePrice" value="Sale Price(Rs.)" />
                 </div>
                 <TextInput
                   id="salePrice"
                   name="salePrice"
                   type="text"
-                  placeholder="Sale Price"
+                  placeholder="Sale Price(Rs.)"
                   required
                   value={salePrice}
                   onChange={handleSalePriceChange}

@@ -76,6 +76,8 @@ const uploadBook = async (req, res, next) => {
     );
   }
 
+  console.log(req.body, "req.body");
+
   const {
     productName,
     description,
@@ -148,7 +150,7 @@ const uploadBook = async (req, res, next) => {
     return next(error);
   }
 
-  res.status(201).json({ book: createdBook });
+  res.status(201).json({ book: createdBook.toObject({ getters: true }) });
 };
 
 const updateBook = async (req, res, next) => {
