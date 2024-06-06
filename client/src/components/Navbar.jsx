@@ -9,7 +9,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
 
-  const { user } = useContext(AuthContext);
+  const { user, token } = useContext(AuthContext);
 
   // toggle menu
   const toggleMenu = () => {
@@ -75,7 +75,7 @@ export default function Navbar() {
               className="text-black hover:text-orange-700"
             >
               <button className="bg-orange-700 text-white px-4 py-2 rounded-lg">
-                {user ? "Logout" : "Login"}
+                {token ? "Logout" : "Login"}
               </button>
             </Link>
           </div>
